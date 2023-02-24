@@ -1,0 +1,43 @@
+import pandas as pd
+import matplotlib.pyplot as plt
+
+# Load data from CSV file
+data = pd.read_csv("sales_data.csv")
+
+# Data preprocessing
+data["Order Date"] = pd.to_datetime(data["Order Date"])
+data["Year"] = data["Order Date"].dt.year
+data["Month"] = data["Order Date"].dt.month
+
+# Total Sales per Month
+monthly_sales = data.groupby("Month")["Sales"].sum()
+plt.plot(monthly_sales)
+plt.title("Total Sales per Month")
+plt.xlabel("Month")
+plt.ylabel("Sales")
+plt.show()
+
+# Top Selling Products
+top_products = data.groupby("Product")["Quantity Ordered"].sum().sort_values(ascending=False)[:10]
+plt.bar(top_products.index, top_products.values)
+plt.xticks(rotation=90)
+plt.title("Top Selling Products")
+plt.xlabel("Product")
+plt.ylabel("Quantity Ordered")
+plt.show()
+
+# Average Sales by Region
+avg_sales_by_region = data.groupby("Region")["Sales"].mean()
+plt.bar(avg_sales_by_region.index, avg_sales_by_region.values)
+plt.title("Average Sales by Region")
+plt.xlabel("Region")
+plt.ylabel("Sales")
+plt.show()
+
+# Year-over-Year Sales Growth
+sales_growth = data.groupby("Year")["Sales"].sum().pct_change().dropna()
+plt.plot(sales_growth)
+plt.title("Year-over-Year Sales Growth")
+plt.xlabel("Year")
+plt.ylabel("Sales Growth")
+plt.show()
